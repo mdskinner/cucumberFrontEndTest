@@ -10,18 +10,20 @@
 
     onMount(async () => {
         if (!speciesUrl) return
-        species = $speciesCollection?.find((s) => s.url == speciesUrl) || (await getData())
+        if (!$speciesCollection) await getData()
+
+        species = $speciesCollection?.find(s => s.url == speciesUrl)
     })
 
     let getData = async () => await api.Species.item(speciesUrl.split('/')[2])
 </script>
-
-<style lang="scss">
-    //
-</style>
 
 {#if species}
     <h3>species: <span><a href={`species${species.url && `?id=${species.url.split('/')[2]}`}`}>{species.name || 'Unknown'}</a></span></h3>
 {:else}
     <p>Checking species...</p>
 {/if}
+
+<style lang="scss">
+    //
+</style>

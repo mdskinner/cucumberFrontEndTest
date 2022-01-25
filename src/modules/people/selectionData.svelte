@@ -8,13 +8,26 @@
     $: feesSplit = fees.toFixed(5).split('.')
 
     $: fees = $peopleSelected.reduce((x, item) => {
-        let { fees_per_day } = $planets.find((p) => p.url == item.homeworld)
+        let { orbital_period } = $planets.find(p => p.url == item.homeworld)
 
-        let value = fees_per_day.split('').pop() == 'c' ? parseFloat(fees_per_day) / 100 : parseFloat(fees_per_day.slice(1))
+        let value = orbital_period.split('').pop() == 'c' ? parseFloat(orbital_period) / 100 : parseFloat(orbital_period.slice(1))
 
         return x + value
     }, 0)
 </script>
+
+{#if $peopleSelected.length}
+    <section>
+        <div>
+            <h3>Selected characters: <span>{$peopleSelected.length}</span></h3>
+            <h3>Total fees per day: <span>${`${numberFormat(feesSplit[0])}.${feesSplit[1]}`}</span></h3>
+        </div>
+
+        <b on:click={() => ($peopleSelected = [])}>
+            <CloseButton />
+        </b>
+    </section>
+{/if}
 
 <style lang="scss">
     section {
@@ -72,16 +85,3 @@
         }
     }
 </style>
-
-{#if $peopleSelected.length}
-    <section>
-        <div>
-            <h3>Selected characters: <span>{$peopleSelected.length}</span></h3>
-            <h3>Total fees per day: <span>${`${numberFormat(feesSplit[0])}.${feesSplit[1]}`}</span></h3>
-        </div>
-
-        <b on:click={() => ($peopleSelected = [])}>
-            <CloseButton />
-        </b>
-    </section>
-{/if}

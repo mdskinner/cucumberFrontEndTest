@@ -6,6 +6,20 @@
     export let homeworld: IPlanet
 </script>
 
+{#if homeworld}
+    <div>
+        <img src={homeworld.image || 'image-placeholder.png'} on:error={handleImgError} alt="avatar" />
+
+        <b>
+            <h3>planet: <span>{homeworld.name}</span></h3>
+            <h3>orbital period: <span>{homeworld.orbital_period}</span></h3>
+            <h3>population: <span>{numberFormat(homeworld.population)}</span></h3>
+        </b>
+
+        <button on:click={() => goto(`planets${homeworld.url && `?id=${homeworld.url.split('/')[2]}`}`)}>view</button>
+    </div>
+{/if}
+
 <style lang="scss">
     div {
         background: var(--color-bg-secondary);
@@ -33,17 +47,3 @@
         }
     }
 </style>
-
-{#if homeworld}
-    <div>
-        <img src={homeworld.image || 'image-placeholder.png'} on:error={handleImgError} alt="avatar" />
-
-        <b>
-            <h3>planet: <span>{homeworld.name}</span></h3>
-            <h3>living cost: <span>{homeworld.fees_per_day} / day</span></h3>
-            <h3>population: <span>{numberFormat(homeworld.population)}</span></h3>
-        </b>
-
-        <button on:click={() => goto(`planets${homeworld.url && `?id=${homeworld.url.split('/')[2]}`}`)}>view</button>
-    </div>
-{/if}

@@ -19,14 +19,16 @@
     import PersonListItem from 'modules/people/listItem.svelte'
 
     let getPeople = async () => ($people = await api.People.collection())
-    let getPlanets = async () => ($planets = await api.Planets.collection())
+    let getPlanets = async () => {
+        $planets = await api.Planets.collection()
+    }
     let getSpecies = async () => ($speciesCollection = await api.Species.collection())
 
     $: if (!$people) getPeople()
     $: if (!$planets) getPlanets()
     $: if (!$speciesCollection) getSpecies()
 
-    $: data = $people?.filter((i) => {
+    $: data = $people?.filter(i => {
         let filterValues = removeNullValues($filters)
 
         if (!_.isMatch(i, filterValues)) return false
@@ -46,6 +48,29 @@
         $page = 0
     })
 </script>
+
+{#if $people && $planets && $speciesCollection}
+    <Search />
+    <Filters data={$people} />
+    <SelectionData />
+
+    <section>
+        {#each paginatedData as item}
+            <PersonListItem character={item} />
+        {:else}
+            <div>
+                <h2>We can't find any more with those filters.</h2>
+                <p>Please try searching for something else or reduce your filters.</p>
+            </div>
+        {/each}
+    </section>
+
+    <b>
+        <Pagination total={data.length} />
+    </b>
+{:else}
+    <h2>Loading characters...</h2>
+{/if}
 
 <style lang="scss">
     section {
@@ -95,26 +120,3 @@
         display: block;
     }
 </style>
-
-{#if $people && $planets && $speciesCollection}
-    <Search />
-    <Filters data={$people} />
-    <SelectionData />
-
-    <section>
-        {#each paginatedData as item}
-            <PersonListItem character={item} />
-        {:else}
-            <div>
-                <h2>We can't find any more with those filters.</h2>
-                <p>Please try searching for something else or reduce your filters.</p>
-            </div>
-        {/each}
-    </section>
-
-    <b>
-        <Pagination total={data.length} />
-    </b>
-{:else}
-    <h2>Loading characters...</h2>
-{/if}

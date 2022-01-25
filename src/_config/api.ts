@@ -2,15 +2,20 @@ import axios, { AxiosResponse } from 'axios'
 import axiosRetry from 'axios-retry'
 import { errorResponse } from '_helpers/errorHandlers'
 
+let retries = process.env.NODE_ENV === 'development' ? 0 : 5
+
 const api = axios.create({
-    baseURL: 'https://fett-api.dev.eks.cucumbersoftware.com',
-    headers: { 'api-key': '49f9a154fd66e86ee67da0f1093055aa' },
+    baseURL: 'https://swapi.dev/api/',
+    // headers: {
+    //     'Access-Control-Allow-Origin': '*',
+    //     // 'api-key': '49f9a154fd66e86ee67da0f1093055aa'
+    // },
 })
-axiosRetry(api, { retries: 5 })
+axiosRetry(api, { retries: retries })
 
 const responseBody = (response: AxiosResponse) => {
-    // console.log('--apiQuery res--', response)
-    return response.data
+    // console.log('--apiQuery res--', response.data.results)
+    return response.data.results
 }
 
 const People = {

@@ -11,10 +11,10 @@ declare interface IPlanet {
     terrain: string
     surface_water: string
     population: string
-    residents: string[],
-    films: string[],
+    residents: string[]
+    films: string[]
     created: Date
     edited: Date
     image: string
-    fees_per_day: string
+    orbital_period: string
 }

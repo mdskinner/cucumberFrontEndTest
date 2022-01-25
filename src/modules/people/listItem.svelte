@@ -11,7 +11,7 @@
     export let character: IPerson
     let selected = false
 
-    const selectCharacter = (e) => {
+    const selectCharacter = e => {
         if (['BUTTON', 'A'].includes(e.target.nodeName)) return
 
         $peopleSelected = $peopleSelected.filter((p: IPerson) => p.name != character.name)
@@ -21,6 +21,29 @@
 
     $: selected = !!$peopleSelected.find((p: IPerson) => p.name == character.name)
 </script>
+
+{#if character}
+    <div class:selected on:click={selectCharacter}>
+        <b class="select"><SelectionTick /></b>
+
+        <img src={character.image || 'avatar-placeholder.png'} on:error={handleAvatarImgError} alt="avatar" />
+
+        <b>
+            <h3>name: <span>{character.name}</span></h3>
+
+            {#each character.species as speciesUrl}
+                <SpeciesName {speciesUrl} />
+            {:else}
+                <h3>species: <span>Unknown</span></h3>
+            {/each}
+
+            <Homeworld homeworld={character.homeworld} />
+            <CostOfLiving homeworld={character.homeworld} />
+        </b>
+
+        <button on:click={() => goto(`people${character.url && `?id=${character.url.split('/')[2]}`}`)}>view</button>
+    </div>
+{/if}
 
 <style lang="scss">
     div {
@@ -99,26 +122,3 @@
         }
     }
 </style>
-
-{#if character}
-    <div class:selected on:click={selectCharacter}>
-        <b class="select"><SelectionTick /></b>
-
-        <img src={character.image || 'avatar-placeholder.png'} on:error={handleAvatarImgError} alt="avatar" />
-
-        <b>
-            <h3>name: <span>{character.name}</span></h3>
-
-            {#each character.species as speciesUrl}
-                <SpeciesName {speciesUrl} />
-            {:else}
-                <h3>species: <span>Unknown</span></h3>
-            {/each}
-
-            <Homeworld homeworld={character.homeworld} />
-            <CostOfLiving homeworld={character.homeworld} />
-        </b>
-
-        <button on:click={() => goto(`people${character.url && `?id=${character.url.split('/')[2]}`}`)}>view</button>
-    </div>
-{/if}
